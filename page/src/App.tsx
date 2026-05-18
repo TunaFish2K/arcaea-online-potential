@@ -595,8 +595,8 @@ function LoginForm({
 
   return (
     <div className="login-container">
-      <form className="login-form card" onSubmit={handleSubmit} method="post">
-        <div>
+      <form className="login-form" onSubmit={handleSubmit} method="post">
+        <div className="form-group">
           <label htmlFor="email">用户名、电子邮箱或用户ID</label>
           <input
             id="email"
@@ -606,7 +606,7 @@ function LoginForm({
             autoComplete="username"
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="password">密码</label>
           <input
             id="password"
@@ -634,7 +634,7 @@ function LoginForm({
           )}
         </div>
 
-        <button type="submit">
+        <button type="submit" className="submit-btn">
           登录并查询
         </button>
       </form>
