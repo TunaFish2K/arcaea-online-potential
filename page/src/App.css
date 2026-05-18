@@ -18,6 +18,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .login-form .form-group {
@@ -124,6 +126,8 @@
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   border: 1px solid #333;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .query-history h3 {
