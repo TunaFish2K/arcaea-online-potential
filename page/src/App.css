@@ -1298,7 +1298,8 @@ button:active {
   .song-jacket {
     width: 48px;
     height: 48px;
-    padding: 0;
+    padding: 4px;
+    box-sizing: border-box;
   }
 
   .song-title {
@@ -1336,7 +1337,8 @@ button:active {
   .song-jacket {
     width: 44px;
     height: 44px;
-    padding: 0;
+    padding: 4px;
+    box-sizing: border-box;
   }
 
   .jacket-box {
