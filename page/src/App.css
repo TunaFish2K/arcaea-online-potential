@@ -615,6 +615,273 @@ button:active {
 .judge-far { color: rgb(250, 170, 17) !important; }
 .judge-lost { color: rgb(221, 68, 68) !important; }
 
+/* 统计行 */
+.stats-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* 下载按钮 */
+.download-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.download-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 图片导出样式 */
+.image-export-container {
+  background: #0a0a0a;
+  padding: 16px;
+  width: 600px;
+  box-sizing: border-box;
+}
+
+.image-header {
+  margin-bottom: 12px;
+}
+
+.image-player-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.image-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: #333;
+}
+
+.image-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.image-player-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.image-player-id {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.2;
+}
+
+.image-potential-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.image-rating-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.image-potential-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: -0.5px;
+}
+
+.image-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-width: 400px;
+}
+
+.image-stat-card {
+  text-align: center;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.image-stat-card label {
+  display: block;
+  font-size: 8px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.image-stat-card .stat-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+.image-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.image-scores-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.image-score-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.image-score-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  height: 64px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.image-song-jacket {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.image-jacket-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  background: #1a1a1a;
+}
+
+.image-jacket-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-song-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 8px 6px 0;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.image-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.image-song-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.image-rank-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #666;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.image-score {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.image-potential-line {
+  font-size: 9px;
+  color: #555;
+  line-height: 1;
+}
+
+.image-potential-line span {
+  color: #666;
+}
+
+.image-meta {
+  display: flex;
+  gap: 6px;
+  font-size: 9px;
+  color: #444;
+  line-height: 1;
+}
+
+.image-meta .time {
+  margin-left: auto;
+  color: #555;
+}
+
+/* 难度颜色 */
+.diff-past { background: rgba(10, 130, 190, 0.25) !important; color: rgb(100, 200, 255) !important; }
+.diff-present { background: rgba(100, 140, 60, 0.25) !important; color: rgb(180, 220, 140) !important; }
+.diff-future { background: rgba(80, 25, 75, 0.25) !important; color: rgb(200, 120, 200) !important; }
+.diff-beyond { background: rgba(130, 35, 40, 0.25) !important; color: rgb(255, 120, 120) !important; }
+.diff-eternal { background: rgba(93, 78, 118, 0.25) !important; color: rgb(180, 160, 220) !important; }
+
+/* 判定颜色 */
+.judge-pure { color: rgb(204, 34, 238) !important; }
+.judge-far { color: rgb(250, 170, 17) !important; }
+.judge-lost { color: rgb(221, 68, 68) !important; }
+
 /* 下载按钮 */
 .toolbar {
   display: flex;
