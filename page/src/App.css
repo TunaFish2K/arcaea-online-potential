@@ -341,10 +341,13 @@ button:active {
 }
 
 .results-content {
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 
 /* 背景层 */
@@ -370,9 +373,11 @@ button:active {
   position: relative;
   z-index: 1;
   padding: 12px 16px 8px;
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
   margin: 0 auto;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* 角色立绘背景 */
@@ -1277,6 +1282,10 @@ button:active {
     padding: 10px 12px 6px;
   }
 
+  .results-content {
+    padding: 0 8px;
+  }
+
   .main-scores,
   .overflow-section {
     padding: 0 12px;
@@ -1297,6 +1306,32 @@ button:active {
 
   .score {
     font-size: 11px;
+  }
+
+  .player-profile {
+    gap: 6px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-name {
+    font-size: 14px;
+  }
+
+  .potential-badge {
+    gap: 2px;
+  }
+
+  .rating-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .potential-text {
+    font-size: 18px;
   }
 }
 
@@ -1325,6 +1360,31 @@ button:active {
   .meta {
     font-size: 7px;
     gap: 3px;
+  }
+
+  .stats-row {
+    gap: 8px;
+  }
+
+  .stats-grid {
+    gap: 6px;
+  }
+
+  .stat-card {
+    padding: 4px;
+  }
+
+  .stat-card label {
+    font-size: 7px;
+  }
+
+  .stat-card .stat-value {
+    font-size: 12px;
+  }
+
+  .download-btn {
+    padding: 4px 8px;
+    font-size: 10px;
   }
 }
 

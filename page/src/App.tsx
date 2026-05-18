@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import "./App.css";
 
@@ -88,12 +88,6 @@ function addQueryRecord(record: QueryRecord) {
   // 最多保留10条
   const limited = records.slice(0, 10);
   localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(limited));
-}
-
-function deleteQueryRecord(userCode: string) {
-  const records = getQueryRecords();
-  const filtered = records.filter((r) => r.userCode !== userCode);
-  localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(filtered));
 }
 
 function formatRecordTime(timestamp: number): string {
@@ -810,7 +804,7 @@ function App() {
     <ErrorPage
       errorMessage={errorMessage!}
       retry={() => {
-        onLogin(accountRef.current!.email, accountRef.current!.password);
+        onLogin(accountRef.current!.email, accountRef.current!.password, false);
       }}
       back={() => {
         setAppState("login");
