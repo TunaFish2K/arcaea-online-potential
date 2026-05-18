@@ -425,7 +425,6 @@ function LoginForm({
           <input
             id="email"
             name="email"
-            placeholder="请输入账号"
             onChange={(ev) => setEmail(ev.target.value)}
             value={email}
             autoComplete="username"
@@ -436,7 +435,6 @@ function LoginForm({
           <input
             id="password"
             name="password"
-            placeholder="请输入密码"
             onChange={(ev) => setPassword(ev.target.value)}
             value={password}
             type="password"
