@@ -1397,11 +1397,11 @@ button:active {
 }
 
 .section-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
   margin: 0 0 8px 0;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  line-height: 1.4;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
