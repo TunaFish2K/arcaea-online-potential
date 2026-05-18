@@ -1304,11 +1304,20 @@ button:active {
   }
 
   .song-title {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   .score {
-    font-size: 11px;
+    font-size: 10px;
+  }
+
+  .potential-line {
+    font-size: 7px;
+  }
+
+  .meta {
+    font-size: 7px;
+    gap: 3px;
   }
 
   .player-profile {
@@ -1349,20 +1358,20 @@ button:active {
   }
 
   .song-title {
-    font-size: 8px;
+    font-size: 7px;
   }
 
   .score {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .potential-line {
-    font-size: 7px;
+    font-size: 6px;
   }
 
   .meta {
-    font-size: 7px;
-    gap: 3px;
+    font-size: 6px;
+    gap: 2px;
   }
 
   .stats-row {
