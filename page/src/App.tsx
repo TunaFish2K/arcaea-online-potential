@@ -643,6 +643,11 @@ function LoginForm({
         </button>
       </form>
 
+      <div className="info-card">
+        <span className="info-icon">ℹ</span>
+        <span>需要 Arcaea Online 订阅</span>
+      </div>
+
       {records.length > 0 && (
         <div className="query-history card">
           <h3>最近查询</h3>

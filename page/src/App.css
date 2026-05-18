@@ -220,6 +220,27 @@
   background: rgba(255, 102, 102, 0.1);
 }
 
+/* 信息提示卡片 */
+.info-card {
+  background-color: #1a1a1a;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #888;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.info-icon {
+  font-size: 16px;
+  color: #666;
+}
+
 /* 通用按钮样式 */
 button {
   font-size: 14px;
