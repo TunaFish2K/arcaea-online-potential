@@ -785,7 +785,10 @@ function App() {
       <LoginForm
         onLogin={onLogin}
         onQuickLogin={(record) => {
-          onLogin(record.userCode, "", false);
+          if (record.response) {
+            setResponse(record.response);
+            setAppState("done");
+          }
         }}
       />
     );
