@@ -1,7 +1,7 @@
 /* ========== 登录页面样式 ========== */
 
 .login-container {
-  max-width: 480px;
+  width: 440px;
   margin: 60px auto;
   padding: 0 20px;
   display: flex;
