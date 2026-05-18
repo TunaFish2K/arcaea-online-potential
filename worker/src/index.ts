@@ -41,6 +41,23 @@ function createCookieHeader(setCookies: string[]) {
 	return result.join('; ');
 }
 
+async function getUserData(cookieHeader: string) {
+	const res = await fetch('https://webapi.lowiro.com/webapi/user/me', {
+		headers: {
+			...baseHeaders,
+			Cookie: cookieHeader,
+		},
+	});
+	return (await res.json()) as {
+		success: boolean;
+		value?: {
+			name: string;
+			user_code: string;
+			rating: number;
+		};
+	};
+}
+
 async function getRatingData(cookieHeader: string) {
 	const res = await fetch('https://webapi.lowiro.com/webapi/score/rating/me', {
 		headers: {
@@ -159,6 +176,7 @@ async function createResponse(
 					recent_rated_scores: RawSong[];
 				};
 		  },
+	userData?: { name: string; user_code: string; rating: number },
 ) {
 	if (!arcaeaServerResponse.success) {
 		if (arcaeaServerResponse.error_code === 203) {
@@ -185,6 +203,7 @@ async function createResponse(
 		success: true,
 		b30: arcaeaServerResponse.value.best_rated_scores.map((v) => createResponseSong(v)),
 		r10: arcaeaServerResponse.value.recent_rated_scores.map((v) => createResponseSong(v)),
+		user: userData,
 	};
 }
 
@@ -213,9 +232,42 @@ export default {
 				}
 				const setCookies = await login(email, password);
 				const cookieHeader = createCookieHeader(setCookies);
-				const rawData = await getRatingData(cookieHeader);
-				const responseData = await createResponse(rawData);
+				const [rawData, userDataRaw] = await Promise.all([
+					getRatingData(cookieHeader),
+					getUserData(cookieHeader),
+				]);
+				const userData = userDataRaw.success ? userDataRaw.value : undefined;
+				const responseData = await createResponse(rawData, userData);
 				return Response.json(responseData, { headers: CORSHeaders });
+			}
+
+			// 封面图片代理 - 用于解决CORS问题
+			if (request.method === 'GET' && pathname === '/cover') {
+				const backgroundName = url.searchParams.get('name');
+				if (!backgroundName) {
+					return new Response('Missing name parameter', { status: 400, headers: CORSHeaders });
+				}
+				
+				const imageUrl = `https://webassets.lowiro.com/${backgroundName}.jpg`;
+				const imageRes = await fetch(imageUrl, {
+					headers: {
+						'Origin': 'https://arcaea.lowiro.com',
+						'Referer': 'https://arcaea.lowiro.com/',
+					},
+				});
+				
+				if (!imageRes.ok) {
+					return new Response('Image not found', { status: 404, headers: CORSHeaders });
+				}
+				
+				const blob = await imageRes.blob();
+				return new Response(blob, {
+					headers: {
+						...CORSHeaders,
+						'Content-Type': blob.type || 'image/jpeg',
+						'Cache-Control': 'public, max-age=86400',
+					},
+				});
 			}
 
 			return new Response('Not Found', { status: 404, headers: CORSHeaders });

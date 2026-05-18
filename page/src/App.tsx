@@ -1,122 +1,561 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+type ResponseSong = {
+  title: string;
+  artist: string;
+  id: string;
+
+  difficulty: "past" | "present" | "future" | "beyond" | "eternal";
+
+  clearType:
+    | "track_lost"
+    | "normal_clear"
+    | "full_recall"
+    | "pure_memory"
+    | "easy_clear"
+    | "hard_clear";
+  ranking: "ex_plus" | "ex" | "aa" | "a" | "b" | "c" | "d";
+
+  rating: number;
+  base: number;
+
+  perfect: number;
+  near: number;
+  miss: number;
+
+  timePlayed: number;
+  backgroundName: string;
+};
+
+type UserData = {
+  name: string;
+  user_code: string;
+  rating: number;
+};
+
+type Response =
+  | {
+      success: true;
+      b30: ResponseSong[];
+      r10: ResponseSong[];
+      user?: UserData;
+    }
+  | {
+      success: false;
+      message: string;
+      error: string;
+    };
+
+const DIFFICULTY_LABELS: Record<string, string> = {
+  past: "PST",
+  present: "PRS",
+  future: "FTR",
+  beyond: "BYD",
+  eternal: "ETR",
+};
+
+const CLEAR_TYPE_LABELS: Record<string, string> = {
+  track_lost: "TL",
+  normal_clear: "NC",
+  full_recall: "FR",
+  pure_memory: "PM",
+  easy_clear: "EC",
+  hard_clear: "HC",
+};
+
+function getCoverUrl(backgroundName: string): string {
+  return `https://webassets.lowiro.com/${backgroundName}.jpg`;
+}
+
+function getProxyCoverUrl(backgroundName: string): string {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+  return `${backendUrl}/cover?name=${encodeURIComponent(backgroundName)}`;
+}
+
+function formatScore(perfect: number, near: number, miss: number): string {
+  const total = perfect + near + miss;
+  if (total === 0) return "0";
+  const score = (perfect * 2 + near) / (total * 2) * 10000000;
+  return Math.floor(score).toLocaleString("en-US").padStart(9, "0");
+}
+
+function getDaysAgo(timePlayed: number): string {
+  const now = Date.now();
+  const diffMs = now - timePlayed;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "今天";
+  if (diffDays === 1) return "昨天";
+  return `${diffDays}d`;
+}
+
+function ScoreCard({ song, rank }: { song: ResponseSong; rank: number }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <article className={`score-card rank-${rank}`}>
+      <div className="song-jacket">
+        <div className="jacket-box">
+          <div className={`jacket-placeholder ${imageLoaded ? "hidden" : ""}`}>♪</div>
+          {!imageError && (
+            <img
+              src={getCoverUrl(song.backgroundName)}
+              alt={song.title}
+              className={imageLoaded ? "loaded" : ""}
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
+            />
+          )}
+        </div>
+      </div>
+      <div className="song-info">
+        <div className="info-header">
+          <h3 className="song-title" title={song.title}>{song.title}</h3>
+          <span className="rank-num">#{rank}</span>
+        </div>
+        <div className="score">{formatScore(song.perfect, song.near, song.miss)}</div>
+        <div className="potential-line">
+          <span className="base">{song.base.toFixed(1)}</span>
+          <span className="arrow"> &gt; </span>
+          <span className="rating">{song.rating.toFixed(4)}</span>
+          <span className="clear-type"> {CLEAR_TYPE_LABELS[song.clearType]}</span>
+        </div>
+        <div className="meta">
+          <span className={`difficulty difficulty-${song.difficulty}`}>{DIFFICULTY_LABELS[song.difficulty]}</span>
+          <span className="ranking">{song.ranking === "ex_plus" ? "EX+" : song.ranking.toUpperCase()}</span>
+          <span className="time">{getDaysAgo(song.timePlayed)}</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ScoreRow({ songs, startRank }: { songs: ResponseSong[]; startRank: number }) {
+  return (
+    <div className="score-row">
+      {songs.map((song, i) => (
+        <ScoreCard key={song.id} song={song} rank={startRank + i} />
+      ))}
+    </div>
+  );
+}
+
+function ScoreGrid({ songs, startRank = 1 }: { songs: ResponseSong[]; startRank?: number }) {
+  const rows = [];
+  for (let i = 0; i < songs.length; i += 3) {
+    rows.push(
+      <ScoreRow
+        key={i}
+        songs={songs.slice(i, i + 3)}
+        startRank={startRank + i}
+      />
+    );
+  }
+  return <div className="scores-grid">{rows}</div>;
+}
+
+function getRatingIcon(potential: number): string {
+  if (potential >= 13.0) return "/ratings/rating_7.png";
+  if (potential >= 12.5) return "/ratings/rating_6.png";
+  if (potential >= 12.0) return "/ratings/rating_5.png";
+  if (potential >= 11.0) return "/ratings/rating_4.png";
+  if (potential >= 10.0) return "/ratings/rating_3.png";
+  if (potential >= 7.0) return "/ratings/rating_2.png";
+  if (potential >= 3.5) return "/ratings/rating_1.png";
+  return "/ratings/rating_0.png";
+}
+
+// 图片生成组件 - 包含B30和R10上下拼接
+function ImageContent({ 
+  b30, 
+  r10, 
+  user, 
+  b30Potential, 
+  r10Potential, 
+  displayPotential 
+}: { 
+  b30: ResponseSong[]; 
+  r10: ResponseSong[]; 
+  user?: UserData;
+  b30Potential: number;
+  r10Potential: number;
+  displayPotential: number;
+}) {
+  const displayName = user?.name ?? "Player";
+  const displayId = user?.user_code ?? "000000000";
+
+  return (
+    <div className="image-export-container">
+      <div className="image-header">
+        <div className="image-player-profile">
+          <div className="image-avatar"></div>
+          <div className="image-player-info">
+            <h1 className="image-player-name">{displayName}</h1>
+            <span className="image-player-id">ID: {displayId}</span>
+          </div>
+          <div className="image-potential-badge">
+            <img src={getRatingIcon(displayPotential)} alt="rating" className="image-rating-icon" />
+            <span className="image-potential-text">{Math.floor(displayPotential * 100) / 100}</span>
+          </div>
+        </div>
+        <div className="image-stats-grid">
+          <div className="image-stat-card">
+            <label>BEST 30 AVG.</label>
+            <span>{b30Potential.toFixed(4)}</span>
+          </div>
+          <div className="image-stat-card">
+            <label>RECENT 10 AVG.</label>
+            <span>{r10Potential.toFixed(4)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="image-section">
+        <h2 className="image-section-title">Best 30</h2>
+        <ScoreGrid songs={b30} />
+      </div>
+
+      <div className="image-section">
+        <h2 className="image-section-title">Recent 10</h2>
+        <ScoreGrid songs={r10} startRank={1} />
+      </div>
+    </div>
+  );
+}
+
+function ResultPage({ response }: { response: Response }) {
+  if (!response.success) return null;
+
+  const [isGenerating, setIsGenerating] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
+  
+  const b30 = response.b30;
+  const r10 = response.r10;
+  const b30Potential = b30.reduce((sum, s) => sum + s.rating, 0) / 30;
+  const r10Potential = r10.reduce((sum, s) => sum + s.rating, 0) / 10;
+  const overallPotential = (b30Potential * 3 + r10Potential) / 4;
+  
+  const user = response.user;
+  const displayName = user?.name ?? "Player";
+  const displayId = user?.user_code ?? "000000000";
+  const displayPotential = user ? user.rating / 100 : overallPotential;
+
+  const handleDownload = async () => {
+    if (!imageRef.current || isGenerating) return;
+    setIsGenerating(true);
+
+    try {
+      // 克隆节点用于截图
+      const clone = imageRef.current.cloneNode(true) as HTMLDivElement;
+      clone.style.position = "fixed";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      clone.style.width = "600px";
+      clone.style.opacity = "1";
+      document.body.appendChild(clone);
+
+      // 将所有图片转换为 Blob URL
+      const images = clone.querySelectorAll("img");
+      const blobUrls: string[] = [];
+      
+      for (const img of Array.from(images)) {
+        try {
+          // 如果是webassets域名，使用代理URL
+          let fetchUrl = img.src;
+          if (img.src.includes('webassets.lowiro.com')) {
+            const backgroundName = img.src.split('/').pop()?.replace('.jpg', '') || '';
+            fetchUrl = getProxyCoverUrl(backgroundName);
+            console.log("Using proxy URL:", fetchUrl);
+          }
+          
+          console.log("Processing image:", img.src, "->", fetchUrl);
+          const response = await fetch(fetchUrl);
+          if (!response.ok) {
+            console.error("Failed to fetch:", fetchUrl, response.status);
+            continue;
+          }
+          const blob = await response.blob();
+          console.log("Got blob:", fetchUrl, blob.type, blob.size);
+          const blobUrl = URL.createObjectURL(blob);
+          blobUrls.push(blobUrl);
+          img.src = blobUrl;
+          img.crossOrigin = "anonymous";
+          console.log("Set blob URL:", blobUrl);
+        } catch (e) {
+          console.error("Failed to convert to blob:", img.src, e);
+        }
+      }
+      
+      console.log("Total images processed:", blobUrls.length);
+
+      // 等待图片加载
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const canvas = await html2canvas(clone, {
+        backgroundColor: "#0a0a0a",
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        imageTimeout: 30000,
+      });
+
+      // 清理 Blob URLs
+      blobUrls.forEach((url) => URL.revokeObjectURL(url));
+      document.body.removeChild(clone);
+
+      const link = document.createElement("a");
+      link.download = `arcaea_${displayName}_${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (e) {
+      console.error("Failed to generate image:", e);
+      alert("图片生成失败，请重试");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <div className="player-bests-container">
+        {/* 背景层 */}
+        <div className="bg-layer">
+          <div className="bg-gradient"></div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
+        {/* 顶部信息区 */}
+        <header className="header-section">
+          <div className="player-profile">
+            <div className="avatar"></div>
+            <div className="player-info">
+              <h1 className="player-name">{displayName}</h1>
+              <span className="player-id">ID: {displayId}</span>
+            </div>
+            <div className="potential-badge">
+              <img src={getRatingIcon(displayPotential)} alt="rating" className="rating-icon" />
+              <span className="potential-text">{Math.floor(displayPotential * 100) / 100}</span>
+            </div>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <label>BEST 30 AVG.</label>
+              <span className="stat-value">{b30Potential.toFixed(4)}</span>
+            </div>
+            <div className="stat-card">
+              <label>RECENT 10 AVG.</label>
+              <span className="stat-value">{r10Potential.toFixed(4)}</span>
+            </div>
+          </div>
+        </header>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        {/* 内容区域 - 固定手机宽度 */}
+        <div className="results-content">
+          <div className="toolbar">
+            {/* 下载按钮 */}
+            <button 
+              className="download-btn"
+              onClick={handleDownload}
+              disabled={isGenerating}
+            >
+              {isGenerating ? "生成中..." : "下载图片"}
+            </button>
+          </div>
+
+          {/* Best 30 */}
+          <section className="score-section">
+            <h2 className="section-title">Best 30</h2>
+            <ScoreGrid songs={b30} />
+          </section>
+
+          {/* Recent 10 */}
+          <section className="score-section">
+            <h2 className="section-title">Recent 10</h2>
+            <ScoreGrid songs={r10} startRank={1} />
+          </section>
+        </div>
+      </div>
+
+      {/* 隐藏的图片生成区域 */}
+      <div
+        ref={imageRef}
+        style={{
+          position: "fixed",
+          left: "-9999px",
+          top: 0,
+          width: "600px",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <ImageContent 
+          b30={b30} 
+          r10={r10} 
+          user={user}
+          b30Potential={b30Potential}
+          r10Potential={r10Potential}
+          displayPotential={displayPotential}
+        />
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+function LoginForm({
+  onLogin,
+}: {
+  onLogin?: (email: string, password: string) => void;
+}) {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const handleSubmit = (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (onLogin) onLogin(email, password);
+  };
+
+  return (
+    <>
+      <form className="login-form card" onSubmit={handleSubmit} method="post">
+        <div>
+          <label htmlFor="email">用户名、电子邮箱或用户ID</label>
+          <input
+            id="email"
+            name="email"
+            placeholder="请输入账号"
+            onChange={(ev) => setEmail(ev.target.value)}
+            value={email}
+            autoComplete="username"
+          />
+        </div>
+        <div>
+          <label htmlFor="password">密码</label>
+          <input
+            id="password"
+            name="password"
+            placeholder="请输入密码"
+            onChange={(ev) => setPassword(ev.target.value)}
+            value={password}
+            type="password"
+            autoComplete="current-password"
+          />
+        </div>
+
+        <button type="submit">
+          登录并查询
+        </button>
+      </form>
+    </>
+  );
+}
+
+function PendingPage() {
+  return (
+    <div className="card pending-container">
+      <div className="pending-spinner"></div>
+      <div className="pending-text">少女折寿中</div>
+    </div>
+  );
+}
+
+function ErrorPage({
+  errorMessage,
+  retry,
+  back,
+}: {
+  errorMessage: string;
+  retry: () => void;
+  back: () => void;
+}) {
+  return (
+    <div className="card failure">
+      <h2>出错了...</h2>
+      <p>{errorMessage}</p>
+      <div>
+        <button
+          onClick={() => {
+            retry();
+          }}
+        >
+          重试
+        </button>
+        <button
+          onClick={() => {
+            back();
+          }}
+        >
+          返回
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [appState, setAppState] = useState<
+    "login" | "pending" | "done" | "failure"
+  >("login");
+
+  const accountRef = useRef<{ email: string; password: string } | null>(null);
+  const [response, setResponse] = useState<Response | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  async function onLogin(email: string, password: string) {
+    accountRef.current = { email, password };
+    try {
+      setAppState("pending");
+      const res = await fetch(
+        new URL("/query", import.meta.env.VITE_BACKEND_URL),
+        {
+          body: JSON.stringify({ email, password }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+        },
+      );
+      const data = (await res.json()) as Response;
+      if (!data.success) {
+        setAppState("failure");
+        setErrorMessage(data.message);
+      } else {
+        setAppState("done");
+        setResponse(data);
+      }
+    } catch (e) {
+      setAppState("failure");
+      console.error(e);
+      if (e instanceof Error) {
+        setErrorMessage(e.message);
+      } else {
+        setErrorMessage("未知错误");
+      }
+    }
+  }
+  if (appState === "login") {
+    return <LoginForm onLogin={onLogin} />;
+  }
+  if (appState === "pending") {
+    return <PendingPage />;
+  }
+
+  if (appState === "done") {
+    return <ResultPage response={response!} />;
+  }
+  return (
+    <ErrorPage
+      errorMessage={errorMessage!}
+      retry={() => {
+        onLogin(accountRef.current!.email, accountRef.current!.password);
+      }}
+      back={() => {
+        setAppState("login");
+      }}
+    />
+  );
+}
+
+export default App;

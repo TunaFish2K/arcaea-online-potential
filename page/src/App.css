@@ -1,184 +1,775 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-}
-
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
+.card {
+  background-color: #1a1a1a;
+  margin: 10vh;
+  padding: 5vh;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+  align-items: center;
+  max-width: 80vh;
+  max-height: 60vh;
+  border-radius: 2vh;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #333;
 }
 
-#next-steps {
+.login-form {
+  max-width: 80vh;
+  max-height: 60vh;
+}
+
+.login-form div {
   display: flex;
-  border-top: 1px solid var(--border);
+  flex-direction: column;
   text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
   width: 100%;
+  padding: 0vh;
+  margin: 0vh;
+  padding-bottom: 2vh;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+.login-form div label {
+  font-size: 1.8vh;
+  color: #6b6375;
+  margin-bottom: 0.5vh;
+  font-weight: 500;
+}
+
+.login-form div input {
+  border: solid 1px #333;
+  background-color: #1a1a1a;
+  color: #fff;
+  height: 8vh;
+  font-size: 4vh;
+  border-radius: 1vh;
+  padding: 0 2vh;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-form div input:focus {
+  outline: none;
+  border-color: #555;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+.login-form div input::placeholder {
+  color: #666;
+}
+
+.login-form div input :autofill {
+  border: solid 1px #333;
+  background-color: #1a1a1a;
+  color: #fff;
+  height: 8vh;
+  width: 100%;
+  font-size: 4vh;
+  border-radius: 1vh;
+}
+
+button {
+  font-size: 2.5vh;
+  background-color: rgb(52, 51, 62);
+  border: none;
+  color: white;
+  border-radius: 1vh;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  background-color: rgb(72, 71, 82);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-form button {
+  width: 100%;
+  height: 8vh;
+  margin-top: 2vh;
+}
+
+.failure {
+  text-align: center;
+}
+
+.failure h2 {
+  color: #fff;
+  margin-bottom: 1vh;
+}
+
+.failure p {
+  color: #999;
+  font-size: 2vh;
+  line-height: 1.5;
+}
+
+.failure div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 5vh;
+  gap: 2vh;
+}
+
+.failure div button {
+  width: 12vh;
+  height: 6vh;
+}
+
+/* 加载动画 */
+.pending-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3vh;
+}
+
+.pending-spinner {
+  width: 6vh;
+  height: 6vh;
+  border: 0.5vh solid rgba(52, 51, 62, 0.2);
+  border-top: 0.5vh solid rgb(52, 51, 62);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pending-text {
+  font-size: 2.5vh;
+  color: #666;
+  letter-spacing: 0.1em;
+}
+
+/* ========== Player Bests 样式 ========== */
+
+.player-bests-container {
+  width: 100%;
+  min-height: 100svh;
+  background: #0a0a0a;
+  color: #fff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.results-content {
+  width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* 背景层 */
+.bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(255, 255, 255, 0.03) 0%,
+    transparent 60%
+  );
+}
+
+/* 顶部信息区 */
+.header-section {
+  position: relative;
+  z-index: 1;
+  padding: 12px 16px 8px;
+  width: 600px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.player-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: #333;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.player-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.player-id {
+  font-size: 10px;
+  color: #555;
+}
+
+.potential-badge {
+  margin-left: auto;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.rating-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  inset: 0;
+}
+
+.potential-text {
+  position: relative;
+  z-index: 1;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 统计卡片 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 400px;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-card label {
+  display: block;
+  font-size: 8px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card .stat-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+/* 成绩网格 */
+.main-scores {
+  position: relative;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+/* 工具栏 */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-bottom: 8px;
+  position: relative;
+  min-height: 28px;
+}
+
+/* 标签栏 - 纸片效果 */
+.tab-bar {
+  position: absolute;
+  top: -29px;
+  right: 80px;
+  display: flex;
+  gap: 0;
+  z-index: 2;
+}
+
+.tab-btn {
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: #999;
+  background: #222;
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
+  z-index: 3;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.scores-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+/* 单个成绩卡片 - 固定布局 */
+.score-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  height: 64px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.15s ease;
+}
+
+.score-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* 封面容器 */
+.song-jacket {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.jacket-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  background: #1a1a1a;
+}
+
+.jacket-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.jacket-box img.loaded {
+  opacity: 1;
+}
+
+.jacket-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #333;
+  transition: opacity 0.2s ease;
+}
+
+.jacket-placeholder.hidden {
+  opacity: 0;
+}
+
+/* 歌曲信息 - 均匀分布 */
+.song-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 8px 6px 0;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.song-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.rank-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: #666;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.score {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.potential-line {
+  font-size: 9px;
+  color: #555;
+  line-height: 1;
+}
+
+.potential-line span {
+  color: #666;
+}
+
+.meta {
+  display: flex;
+  gap: 6px;
+  font-size: 9px;
+  color: #444;
+  line-height: 1;
+}
+
+.meta .time {
+  margin-left: auto;
+  color: #555;
+}
+
+/* 难度颜色 - 加粗+背景高亮 */
+.difficulty-past {
+  color: rgb(10, 130, 190) !important;
+  font-weight: 700;
+  background: rgba(10, 130, 190, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.difficulty-present {
+  color: rgb(100, 140, 60) !important;
+  font-weight: 700;
+  background: rgba(100, 140, 60, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.difficulty-future {
+  color: rgb(140, 60, 160) !important;
+  font-weight: 700;
+  background: rgba(140, 60, 160, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.difficulty-beyond {
+  color: rgb(180, 50, 60) !important;
+  font-weight: 700;
+  background: rgba(180, 50, 60, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.difficulty-eternal {
+  color: rgb(130, 110, 170) !important;
+  font-weight: 700;
+  background: rgba(130, 110, 170, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* 判定颜色 */
+.judge-pure { color: rgb(204, 34, 238) !important; }
+.judge-far { color: rgb(250, 170, 17) !important; }
+.judge-lost { color: rgb(221, 68, 68) !important; }
+
+/* 下载按钮 */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 8px;
+  position: relative;
+  padding-top: 8px;
+}
+
+.download-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-left: auto;
+}
+
+.download-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 图片导出样式 */
+.image-export-container {
+  background: #0a0a0a;
+  padding: 16px;
+  width: 600px;
+  box-sizing: border-box;
+}
+
+.image-header {
+  margin-bottom: 12px;
+}
+
+.image-player-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.image-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: #333;
+}
+
+.image-player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.image-player-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.image-player-id {
+  font-size: 10px;
+  color: #555;
+}
+
+.image-potential-badge {
+  margin-left: auto;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.image-rating-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  inset: 0;
+}
+
+.image-potential-text {
+  position: relative;
+  z-index: 1;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.image-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-width: 400px;
+}
+
+.image-stat-card {
+  text-align: center;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.image-stat-card label {
+  display: block;
+  font-size: 8px;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.image-stat-card span {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+.image-section {
+  margin-bottom: 12px;
+}
+
+.image-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Overflow 区域 */
+.overflow-section {
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.overflow-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.overflow-title .bar {
+  width: 2px;
+  height: 12px;
+  background: #444;
+  border-radius: 1px;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .header-section {
+    padding: 10px 12px 6px;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .main-scores,
+  .overflow-section {
+    padding: 0 12px;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  .score-card {
+    grid-template-columns: 48px 1fr;
+  }
+
+  .song-jacket {
+    width: 48px;
+    min-height: 48px;
+  }
+
+  .song-title {
+    font-size: 9px;
+  }
+
+  .score {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .score-card {
+    grid-template-columns: 44px 1fr;
+  }
+
+  .song-jacket {
+    width: 44px;
+    min-height: 44px;
+  }
+
+  .song-title {
+    font-size: 8px;
+  }
+
+  .score {
+    font-size: 10px;
+  }
+
+  .potential-line {
+    font-size: 7px;
+  }
+
+  .meta {
+    font-size: 7px;
+    gap: 3px;
   }
 }
