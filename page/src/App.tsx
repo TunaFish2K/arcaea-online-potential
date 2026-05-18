@@ -583,10 +583,12 @@ function LoginForm({
     if (onLogin) onLogin(email, password, remember);
   };
 
-  const handleDeleteRecord = (userCode: string, ev: React.MouseEvent) => {
+  const handleDeleteRecord = (index: number, ev: React.MouseEvent) => {
     ev.stopPropagation();
-    deleteQueryRecord(userCode);
-    setRecords(getQueryRecords());
+    const newRecords = [...records];
+    newRecords.splice(index, 1);
+    localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(newRecords));
+    setRecords(newRecords);
   };
 
   const handleClearAccount = () => {
@@ -661,7 +663,7 @@ function LoginForm({
                   <span className="history-time">{formatRecordTime(record.timestamp)}</span>
                   <button
                     className="delete-record-btn"
-                    onClick={(ev) => handleDeleteRecord(record.userCode, ev)}
+                    onClick={(ev) => handleDeleteRecord(index, ev)}
                   >
                     ×
                   </button>
