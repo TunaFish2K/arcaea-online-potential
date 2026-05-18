@@ -37,6 +37,9 @@ type QueryRecord = {
   timestamp: number;
   b30Potential: number;
   r10Potential: number;
+  email?: string;
+  password?: string;
+  response?: Response;
 };
 
 const STORAGE_KEY_ACCOUNT = "arcaea_saved_account";
@@ -694,7 +697,7 @@ function ErrorPage({
     <div className="card failure">
       <h2>出错了...</h2>
       <p>{errorMessage}</p>
-      <div>
+      <div className="error-actions">
         <button
           onClick={() => {
             retry();
@@ -723,8 +726,14 @@ function App() {
   const [response, setResponse] = useState<Response | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  async function onLogin(email: string, password: string) {
+  async function onLogin(email: string, password: string, remember: boolean) {
     accountRef.current = { email, password };
+    
+    // 保存账号（如果选择了记住我）
+    if (remember) {
+      saveAccount(email, password);
+    }
+    
     try {
       setAppState("pending");
       const res = await fetch(
@@ -744,6 +753,22 @@ function App() {
       } else {
         setAppState("done");
         setResponse(data);
+        
+        // 保存查询记录
+        if (data.user) {
+          const b30Potential = data.b30.reduce((sum, s) => sum + s.rating, 0) / 30;
+          const r10Potential = data.r10.reduce((sum, s) => sum + s.rating, 0) / 10;
+          addQueryRecord({
+            id: data.user.user_code,
+            name: data.user.name,
+            userCode: data.user.user_code,
+            potential: data.user.rating / 100,
+            timestamp: Date.now(),
+            b30Potential,
+            r10Potential,
+            response: data,
+          });
+        }
       }
     } catch (e) {
       setAppState("failure");
@@ -756,7 +781,14 @@ function App() {
     }
   }
   if (appState === "login") {
-    return <LoginForm onLogin={onLogin} />;
+    return (
+      <LoginForm
+        onLogin={onLogin}
+        onQuickLogin={(record) => {
+          onLogin(record.userCode, "", false);
+        }}
+      />
+    );
   }
   if (appState === "pending") {
     return <PendingPage />;
