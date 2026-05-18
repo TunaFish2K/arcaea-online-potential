@@ -304,9 +304,26 @@ function ImageContent({
 
   return (
     <div className="image-export-container">
+      {user?.profile_image && (
+        <div className="image-char-profile-bg">
+          <img 
+            src={getCharProfileUrl(user.profile_image)} 
+            alt="character" 
+            className="image-char-profile-img"
+          />
+        </div>
+      )}
       <div className="image-header">
         <div className="image-player-profile">
-          <div className="image-avatar"></div>
+          <div className="image-avatar">
+            {user?.icon && (
+              <img 
+                src={getCharIconUrl(user.icon)} 
+                alt="avatar" 
+                className="image-avatar-img"
+              />
+            )}
+          </div>
           <div className="image-player-info">
             <h1 className="image-player-name">{displayName}</h1>
             <span className="image-player-id">ID: {displayId}</span>

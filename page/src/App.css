@@ -1,96 +1,239 @@
-.card {
-  background-color: #1a1a1a;
-  margin: 10vh;
-  padding: 5vh;
+/* ========== 登录页面样式 ========== */
+
+.login-container {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  max-width: 80vh;
-  max-height: 60vh;
-  border-radius: 2vh;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #333;
+  gap: 20px;
 }
 
 .login-form {
-  max-width: 80vh;
-  max-height: 60vh;
-}
-
-.login-form div {
+  background-color: #1a1a1a;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
   display: flex;
   flex-direction: column;
-  text-align: left;
-  width: 100%;
-  padding: 0vh;
-  margin: 0vh;
-  padding-bottom: 2vh;
+  gap: 16px;
 }
 
-.login-form div label {
-  font-size: 1.8vh;
-  color: #6b6375;
-  margin-bottom: 0.5vh;
+.login-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-form .form-group label {
+  font-size: 13px;
+  color: #888;
   font-weight: 500;
 }
 
-.login-form div input {
+.login-form .form-group input {
   border: solid 1px #333;
-  background-color: #1a1a1a;
+  background-color: #0f0f0f;
   color: #fff;
-  height: 8vh;
-  font-size: 4vh;
-  border-radius: 1vh;
-  padding: 0 2vh;
+  height: 44px;
+  font-size: 15px;
+  border-radius: 8px;
+  padding: 0 14px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.login-form div input:focus {
+.login-form .form-group input:focus {
   outline: none;
   border-color: #555;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
-.login-form div input::placeholder {
+.login-form .form-group input::placeholder {
+  color: #555;
+}
+
+.remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #888;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: rgb(52, 51, 62);
+  cursor: pointer;
+}
+
+.clear-account-btn {
+  font-size: 12px;
   color: #666;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
 }
 
-.login-form div input :autofill {
-  border: solid 1px #333;
-  background-color: #1a1a1a;
-  color: #fff;
-  height: 8vh;
+.clear-account-btn:hover {
+  color: #999;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.login-form .submit-btn {
   width: 100%;
-  font-size: 4vh;
-  border-radius: 1vh;
-}
-
-button {
-  font-size: 2.5vh;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 600;
   background-color: rgb(52, 51, 62);
   border: none;
   color: white;
-  border-radius: 1vh;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 4px;
+}
+
+.login-form .submit-btn:hover {
+  background-color: rgb(72, 71, 82);
+}
+
+.login-form .submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* 查询历史 */
+.query-history {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
+}
+
+.query-history h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.history-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.history-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.history-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.history-code {
+  font-size: 12px;
+  color: #666;
+}
+
+.history-potential {
+  font-size: 13px;
+  font-weight: 700;
+  color: #aaa;
+  font-family: 'Courier New', monospace;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-time {
+  font-size: 11px;
+  color: #555;
+  font-family: 'Courier New', monospace;
+}
+
+.delete-record-btn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #555;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.delete-record-btn:hover {
+  color: #ff6666;
+  background: rgba(255, 102, 102, 0.1);
+}
+
+/* 通用按钮样式 */
+button {
+  font-size: 14px;
+  background-color: rgb(52, 51, 62);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  padding: 8px 16px;
 }
 
 button:hover {
   background-color: rgb(72, 71, 82);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.login-form button {
-  width: 100%;
-  height: 8vh;
-  margin-top: 2vh;
+  transform: translateY(1px);
 }
 
 .failure {
@@ -920,10 +1063,34 @@ button:active {
   padding: 16px;
   width: 600px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-char-profile-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  overflow: hidden;
+}
+
+.image-char-profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
 }
 
 .image-header {
   margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .image-player-profile {
@@ -934,10 +1101,17 @@ button:active {
 }
 
 .image-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  background: #333;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.image-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .image-player-info {
