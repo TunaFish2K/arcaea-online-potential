@@ -1,12 +1,14 @@
 /* ========== 登录页面样式 ========== */
 
 .login-container {
-  width: 440px;
+  width: 100%;
+  max-width: 440px;
   margin: 60px auto;
   padding: 0 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  box-sizing: border-box;
 }
 
 .login-form {
