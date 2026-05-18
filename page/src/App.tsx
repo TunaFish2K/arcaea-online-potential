@@ -83,11 +83,10 @@ function getQueryRecords(): QueryRecord[] {
 
 function addQueryRecord(record: QueryRecord) {
   const records = getQueryRecords();
-  // 去重：如果同一个用户已存在，先删除旧的
-  const filtered = records.filter((r) => r.userCode !== record.userCode);
-  filtered.unshift(record);
+  // 不去重，直接添加到最前面
+  records.unshift(record);
   // 最多保留10条
-  const limited = filtered.slice(0, 10);
+  const limited = records.slice(0, 10);
   localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(limited));
 }
 
