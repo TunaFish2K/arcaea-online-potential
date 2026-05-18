@@ -341,18 +341,6 @@ function ResultPage({ response }: { response: Response }) {
 
         {/* 顶部信息区 */}
         <header className="header-section">
-          {user?.profile_image && (
-            <div className="char-profile-bg">
-              <img 
-                src={getCharProfileUrl(user.profile_image)} 
-                alt="character" 
-                className="char-profile-img"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </div>
-          )}
           <div className="player-profile">
             <div className="avatar">
               {user?.icon && (
@@ -399,6 +387,18 @@ function ResultPage({ response }: { response: Response }) {
 
         {/* 内容区域 - 固定手机宽度 */}
         <div className="results-content">
+          {user?.profile_image && (
+            <div className="char-profile-bg">
+              <img 
+                src={getCharProfileUrl(user.profile_image)} 
+                alt="character" 
+                className="char-profile-img"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
 
           {/* Best 30 */}
           <section className="score-section">

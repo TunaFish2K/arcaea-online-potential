@@ -199,13 +199,14 @@ button:active {
 /* 角色立绘背景 */
 .char-profile-bg {
   position: absolute;
-  top: 0;
+  bottom: 0;
+  left: 0;
   right: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.12;
+  opacity: 0.2;
   overflow: hidden;
 }
 
@@ -213,7 +214,7 @@ button:active {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: right center;
+  object-position: bottom center;
 }
 
 .logo {
