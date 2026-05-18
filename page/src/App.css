@@ -1292,69 +1292,21 @@ button:active {
   }
 
   .score-card {
-    grid-template-columns: 56px 1fr;
-    height: 56px;
+    grid-template-columns: 42px 1fr;
+    height: 42px;
   }
 
   .song-jacket {
-    width: 56px;
-    height: 56px;
-    padding: 4px;
-    box-sizing: border-box;
-  }
-
-  .song-title {
-    font-size: 8px;
-  }
-
-  .score {
-    font-size: 10px;
-  }
-
-  .potential-line {
-    font-size: 7px;
-  }
-
-  .meta {
-    font-size: 7px;
-    gap: 3px;
-  }
-
-  .player-profile {
-    gap: 6px;
-  }
-
-  .avatar {
-    width: 40px;
-    height: 40px;
-  }
-
-  .player-name {
-    font-size: 14px;
-  }
-
-  .player-name {
-    font-size: 14px;
-    letter-spacing: 0.5px;
-  }
-}
-
-@media (max-width: 480px) {
-  .score-card {
-    grid-template-columns: 52px 1fr;
-    height: 52px;
-  }
-
-  .song-jacket {
-    width: 52px;
-    height: 52px;
-    padding: 4px;
+    width: 42px;
+    height: 42px;
+    padding: 3px;
     box-sizing: border-box;
   }
 
   .jacket-box {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
   }
 
   .song-title {
@@ -1374,6 +1326,33 @@ button:active {
     gap: 2px;
   }
 
+  .player-profile {
+    gap: 6px;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player-name {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  .potential-badge {
+    gap: 2px;
+  }
+
+  .rating-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .potential-text {
+    font-size: 16px;
+  }
+
   .stats-row {
     gap: 8px;
   }
@@ -1391,12 +1370,74 @@ button:active {
   }
 
   .stat-card .stat-value {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .download-btn {
     padding: 4px 8px;
     font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .score-card {
+    grid-template-columns: 38px 1fr;
+    height: 38px;
+  }
+
+  .song-jacket {
+    width: 38px;
+    height: 38px;
+    padding: 3px;
+    box-sizing: border-box;
+  }
+
+  .jacket-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 3px;
+  }
+
+  .song-title {
+    font-size: 6px;
+  }
+
+  .score {
+    font-size: 8px;
+  }
+
+  .potential-line {
+    font-size: 5px;
+  }
+
+  .meta {
+    font-size: 5px;
+    gap: 2px;
+  }
+
+  .stats-row {
+    gap: 6px;
+  }
+
+  .stats-grid {
+    gap: 4px;
+  }
+
+  .stat-card {
+    padding: 3px;
+  }
+
+  .stat-card label {
+    font-size: 6px;
+  }
+
+  .stat-card .stat-value {
+    font-size: 10px;
+  }
+
+  .download-btn {
+    padding: 3px 6px;
+    font-size: 9px;
   }
 }
 
