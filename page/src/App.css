@@ -1321,21 +1321,6 @@ button:active {
     font-size: 14px;
   }
 
-  .potential-badge {
-    gap: 2px;
-    flex-shrink: 0;
-  }
-
-  .rating-icon {
-    width: 24px;
-    height: 24px;
-  }
-
-  .potential-text {
-    font-size: 16px;
-    letter-spacing: 0;
-  }
-
   .player-name {
     font-size: 14px;
     letter-spacing: 0.5px;
