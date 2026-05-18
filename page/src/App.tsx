@@ -33,6 +33,9 @@ type UserData = {
   name: string;
   user_code: string;
   rating: number;
+  character: number;
+  icon: string;
+  profile_image: string;
 };
 
 type Response =
@@ -73,6 +76,16 @@ function getProxyCoverUrl(backgroundName: string): string {
   const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
   return `${backendUrl}/cover?name=${encodeURIComponent(backgroundName)}`;
 }
+
+function getCharIconUrl(hash: string): string {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+  return `${backendUrl}/char-icon?hash=${encodeURIComponent(hash)}`;
+}
+
+// function getCharProfileUrl(hash: string): string {
+//   const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+//   return `${backendUrl}/char-profile?hash=${encodeURIComponent(hash)}`;
+// }
 
 function formatScore(perfect: number, near: number, miss: number): string {
   const total = perfect + near + miss;
@@ -329,14 +342,27 @@ function ResultPage({ response }: { response: Response }) {
         {/* 顶部信息区 */}
         <header className="header-section">
           <div className="player-profile">
-            <div className="avatar"></div>
-            <div className="player-info">
-              <h1 className="player-name">{displayName}</h1>
-              <span className="player-id">ID: {displayId}</span>
+            <div className="avatar">
+              {user?.icon && (
+                <img 
+                  src={getCharIconUrl(user.icon)} 
+                  alt="avatar" 
+                  className="avatar-img"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              )}
             </div>
-            <div className="potential-badge">
-              <img src={getRatingIcon(displayPotential)} alt="rating" className="rating-icon" />
-              <span className="potential-text">{Math.floor(displayPotential * 100) / 100}</span>
+            <div className="player-info">
+              <div className="name-row">
+                <h1 className="player-name">{displayName}</h1>
+                <span className="player-id">ID: {displayId}</span>
+                <div className="potential-badge">
+                  <img src={getRatingIcon(displayPotential)} alt="rating" className="rating-icon" />
+                  <span className="potential-text">{Math.floor(displayPotential * 100) / 100}</span>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -41,6 +41,18 @@ function createCookieHeader(setCookies: string[]) {
 	return result.join('; ');
 }
 
+type CharacterStat = {
+	character_id: number;
+	name: string;
+	icon: string;
+	profile_image: string;
+	display_name: {
+		en: string;
+		ja: string;
+		'zh-Hans': string;
+	};
+};
+
 async function getUserData(cookieHeader: string) {
 	const res = await fetch('https://webapi.lowiro.com/webapi/user/me', {
 		headers: {
@@ -54,6 +66,8 @@ async function getUserData(cookieHeader: string) {
 			name: string;
 			user_code: string;
 			rating: number;
+			character: number;
+			character_stats: CharacterStat[];
 		};
 	};
 }
@@ -166,6 +180,35 @@ function createResponseSong(rawSong: RawSong) {
 	} satisfies ResponseSong;
 }
 
+type UserData = {
+	name: string;
+	user_code: string;
+	rating: number;
+	character: number;
+	icon: string;
+	profile_image: string;
+};
+
+function extractUserData(rawUserData: {
+	name: string;
+	user_code: string;
+	rating: number;
+	character: number;
+	character_stats: CharacterStat[];
+}): UserData {
+	const character = rawUserData.character_stats.find(
+		(c) => c.character_id === rawUserData.character
+	);
+	return {
+		name: rawUserData.name,
+		user_code: rawUserData.user_code,
+		rating: rawUserData.rating,
+		character: rawUserData.character,
+		icon: character?.icon || '',
+		profile_image: character?.profile_image || '',
+	};
+}
+
 async function createResponse(
 	arcaeaServerResponse:
 		| { success: false; error_code: number }
@@ -176,7 +219,7 @@ async function createResponse(
 					recent_rated_scores: RawSong[];
 				};
 		  },
-	userData?: { name: string; user_code: string; rating: number },
+	userData?: UserData,
 ) {
 	if (!arcaeaServerResponse.success) {
 		if (arcaeaServerResponse.error_code === 203) {
@@ -236,12 +279,12 @@ export default {
 					getRatingData(cookieHeader),
 					getUserData(cookieHeader),
 				]);
-				const userData = userDataRaw.success ? userDataRaw.value : undefined;
-				const responseData = await createResponse(rawData, userData);
-				return Response.json(responseData, { headers: CORSHeaders });
+			const userData = userDataRaw.success && userDataRaw.value ? extractUserData(userDataRaw.value) : undefined;
+			const responseData = await createResponse(rawData, userData);
+			return Response.json(responseData, { headers: CORSHeaders });
 			}
 
-			// 封面图片代理 - 用于解决CORS问题
+			// 图片代理 - 用于解决CORS问题
 			if (request.method === 'GET' && pathname === '/cover') {
 				const backgroundName = url.searchParams.get('name');
 				if (!backgroundName) {
@@ -265,6 +308,64 @@ export default {
 					headers: {
 						...CORSHeaders,
 						'Content-Type': blob.type || 'image/jpeg',
+						'Cache-Control': 'public, max-age=86400',
+					},
+				});
+			}
+
+			// 角色头像代理
+			if (request.method === 'GET' && pathname === '/char-icon') {
+				const hash = url.searchParams.get('hash');
+				if (!hash) {
+					return new Response('Missing hash parameter', { status: 400, headers: CORSHeaders });
+				}
+				
+				const imageUrl = `https://webassets.lowiro.com/chr/${hash}.png`;
+				const imageRes = await fetch(imageUrl, {
+					headers: {
+						'Origin': 'https://arcaea.lowiro.com',
+						'Referer': 'https://arcaea.lowiro.com/',
+					},
+				});
+				
+				if (!imageRes.ok) {
+					return new Response('Image not found', { status: 404, headers: CORSHeaders });
+				}
+				
+				const blob = await imageRes.blob();
+				return new Response(blob, {
+					headers: {
+						...CORSHeaders,
+						'Content-Type': blob.type || 'image/png',
+						'Cache-Control': 'public, max-age=86400',
+					},
+				});
+			}
+
+			// 角色立绘代理
+			if (request.method === 'GET' && pathname === '/char-profile') {
+				const hash = url.searchParams.get('hash');
+				if (!hash) {
+					return new Response('Missing hash parameter', { status: 400, headers: CORSHeaders });
+				}
+				
+				const imageUrl = `https://webassets.lowiro.com/profile/${hash}.png`;
+				const imageRes = await fetch(imageUrl, {
+					headers: {
+						'Origin': 'https://arcaea.lowiro.com',
+						'Referer': 'https://arcaea.lowiro.com/',
+					},
+				});
+				
+				if (!imageRes.ok) {
+					return new Response('Image not found', { status: 404, headers: CORSHeaders });
+				}
+				
+				const blob = await imageRes.blob();
+				return new Response(blob, {
+					headers: {
+						...CORSHeaders,
+						'Content-Type': blob.type || 'image/png',
 						'Cache-Control': 'public, max-age=86400',
 					},
 				});
