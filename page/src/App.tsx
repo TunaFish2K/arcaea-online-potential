@@ -646,9 +646,9 @@ function LoginForm({
         <div className="query-history card">
           <h3>最近查询</h3>
           <div className="history-list">
-            {records.map((record) => (
+            {records.map((record, index) => (
               <div
-                key={record.userCode}
+                key={`${record.userCode}-${index}`}
                 className="history-item"
                 onClick={() => onQuickLogin?.(record)}
               >
