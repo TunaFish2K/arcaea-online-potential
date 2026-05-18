@@ -19,6 +19,8 @@ const baseHeaders = {
 
 const CORSHeaders = {
 	'Access-Control-Allow-Origin': '*',
+	'Access-Control-Allow-Methods': '*',
+	'Access-Control-Allow-Headers': '*',
 };
 
 async function login(email: string, password: string) {
@@ -189,6 +191,7 @@ async function createResponse(
 export default {
 	async fetch(request): Promise<Response> {
 		try {
+			if (request.method === 'OPTIONS') return new Response(null, { headers: CORSHeaders, status: 204 });
 			const url = new URL(request.url);
 			const pathname = url.pathname;
 
