@@ -17,6 +17,10 @@ const baseHeaders = {
 	Referer: 'https://arcaea.lowiro.com/',
 };
 
+const CORSHeaders = {
+	'Access-Control-Allow-Origin': '*',
+};
+
 async function login(email: string, password: string) {
 	const res = await fetch('https://webapi.lowiro.com/auth/login', {
 		headers: baseHeaders,
@@ -208,13 +212,13 @@ export default {
 				const cookieHeader = createCookieHeader(setCookies);
 				const rawData = await getRatingData(cookieHeader);
 				const responseData = await createResponse(rawData);
-				return Response.json(responseData);
+				return Response.json(responseData, { headers: CORSHeaders });
 			}
 
-			return new Response('Not Found', { status: 404 });
+			return new Response('Not Found', { status: 404, headers: CORSHeaders });
 		} catch (e) {
 			console.error(e);
-			return new Response('Internal Server Error', { status: 500 });
+			return new Response('Internal Server Error', { status: 500, headers: CORSHeaders });
 		}
 	},
 } satisfies ExportedHandler<Env>;
