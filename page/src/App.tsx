@@ -82,10 +82,10 @@ function getCharIconUrl(hash: string): string {
   return `${backendUrl}/char-icon?hash=${encodeURIComponent(hash)}`;
 }
 
-// function getCharProfileUrl(hash: string): string {
-//   const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-//   return `${backendUrl}/char-profile?hash=${encodeURIComponent(hash)}`;
-// }
+function getCharProfileUrl(hash: string): string {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+  return `${backendUrl}/char-profile?hash=${encodeURIComponent(hash)}`;
+}
 
 function formatScore(perfect: number, near: number, miss: number): string {
   const total = perfect + near + miss;
@@ -341,6 +341,18 @@ function ResultPage({ response }: { response: Response }) {
 
         {/* 顶部信息区 */}
         <header className="header-section">
+          {user?.profile_image && (
+            <div className="char-profile-bg">
+              <img 
+                src={getCharProfileUrl(user.profile_image)} 
+                alt="character" 
+                className="char-profile-img"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          )}
           <div className="player-profile">
             <div className="avatar">
               {user?.icon && (
@@ -355,33 +367,26 @@ function ResultPage({ response }: { response: Response }) {
               )}
             </div>
             <div className="player-info">
-              <div className="name-row">
-                <h1 className="player-name">{displayName}</h1>
-                <span className="player-id">ID: {displayId}</span>
-                <div className="potential-badge">
-                  <img src={getRatingIcon(displayPotential)} alt="rating" className="rating-icon" />
-                  <span className="potential-text">{Math.floor(displayPotential * 100) / 100}</span>
-                </div>
+              <h1 className="player-name">{displayName}</h1>
+              <span className="player-id">ID: {displayId}</span>
+            </div>
+            <div className="potential-badge">
+              <img src={getRatingIcon(displayPotential)} alt="rating" className="rating-icon" />
+              <span className="potential-text">{Math.floor(displayPotential * 100) / 100}</span>
+            </div>
+          </div>
+
+          <div className="stats-row">
+            <div className="stats-grid">
+              <div className="stat-card">
+                <label>BEST 30 AVG.</label>
+                <span className="stat-value">{b30Potential.toFixed(4)}</span>
+              </div>
+              <div className="stat-card">
+                <label>RECENT 10 AVG.</label>
+                <span className="stat-value">{r10Potential.toFixed(4)}</span>
               </div>
             </div>
-          </div>
-
-          <div className="stats-grid">
-            <div className="stat-card">
-              <label>BEST 30 AVG.</label>
-              <span className="stat-value">{b30Potential.toFixed(4)}</span>
-            </div>
-            <div className="stat-card">
-              <label>RECENT 10 AVG.</label>
-              <span className="stat-value">{r10Potential.toFixed(4)}</span>
-            </div>
-          </div>
-        </header>
-
-        {/* 内容区域 - 固定手机宽度 */}
-        <div className="results-content">
-          <div className="toolbar">
-            {/* 下载按钮 */}
             <button 
               className="download-btn"
               onClick={handleDownload}
@@ -390,6 +395,10 @@ function ResultPage({ response }: { response: Response }) {
               {isGenerating ? "生成中..." : "下载图片"}
             </button>
           </div>
+        </header>
+
+        {/* 内容区域 - 固定手机宽度 */}
+        <div className="results-content">
 
           {/* Best 30 */}
           <section className="score-section">
