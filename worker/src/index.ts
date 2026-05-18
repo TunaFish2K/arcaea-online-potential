@@ -211,7 +211,7 @@ export default {
 				return Response.json(responseData);
 			}
 
-			return Response.json({ pathname });
+			return new Response('Not Found', { status: 404 });
 		} catch (e) {
 			console.error(e);
 			return new Response('Internal Server Error', { status: 500 });
