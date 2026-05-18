@@ -1,6 +1,109 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import html2canvas from "html2canvas";
 import "./App.css";
+
+// 简单的 XOR 加密（基础混淆，非真正安全）
+const XOR_KEY = "ArcaeaOnline2024";
+function xorEncrypt(text: string): string {
+  let result = "";
+  for (let i = 0; i < text.length; i++) {
+    result += String.fromCharCode(text.charCodeAt(i) ^ XOR_KEY.charCodeAt(i % XOR_KEY.length));
+  }
+  return btoa(result);
+}
+function xorDecrypt(encoded: string): string {
+  try {
+    const text = atob(encoded);
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+      result += String.fromCharCode(text.charCodeAt(i) ^ XOR_KEY.charCodeAt(i % XOR_KEY.length));
+    }
+    return result;
+  } catch {
+    return "";
+  }
+}
+
+type SavedAccount = {
+  email: string;
+  password: string;
+};
+
+type QueryRecord = {
+  id: string;
+  name: string;
+  userCode: string;
+  potential: number;
+  timestamp: number;
+  b30Potential: number;
+  r10Potential: number;
+};
+
+const STORAGE_KEY_ACCOUNT = "arcaea_saved_account";
+const STORAGE_KEY_RECORDS = "arcaea_query_records";
+
+function getSavedAccount(): SavedAccount | null {
+  const data = localStorage.getItem(STORAGE_KEY_ACCOUNT);
+  if (!data) return null;
+  try {
+    const parsed = JSON.parse(data);
+    return {
+      email: xorDecrypt(parsed.email),
+      password: xorDecrypt(parsed.password),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function saveAccount(email: string, password: string) {
+  const data = {
+    email: xorEncrypt(email),
+    password: xorEncrypt(password),
+  };
+  localStorage.setItem(STORAGE_KEY_ACCOUNT, JSON.stringify(data));
+}
+
+function clearSavedAccount() {
+  localStorage.removeItem(STORAGE_KEY_ACCOUNT);
+}
+
+function getQueryRecords(): QueryRecord[] {
+  const data = localStorage.getItem(STORAGE_KEY_RECORDS);
+  if (!data) return [];
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+function addQueryRecord(record: QueryRecord) {
+  const records = getQueryRecords();
+  // 去重：如果同一个用户已存在，先删除旧的
+  const filtered = records.filter((r) => r.userCode !== record.userCode);
+  filtered.unshift(record);
+  // 最多保留10条
+  const limited = filtered.slice(0, 10);
+  localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(limited));
+}
+
+function deleteQueryRecord(userCode: string) {
+  const records = getQueryRecords();
+  const filtered = records.filter((r) => r.userCode !== userCode);
+  localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(filtered));
+}
+
+function formatRecordTime(timestamp: number): string {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 type ResponseSong = {
   title: string;
@@ -275,12 +378,15 @@ function ResultPage({ response }: { response: Response }) {
       
       for (const img of Array.from(images)) {
         try {
-          // 如果是webassets域名，使用代理URL
+          // 跳过已经是 blob URL 的图片
+          if (img.src.startsWith('blob:')) continue;
+          
           let fetchUrl = img.src;
+          
+          // 如果是 webassets 域名，转换为代理 URL
           if (img.src.includes('webassets.lowiro.com')) {
             const backgroundName = img.src.split('/').pop()?.replace('.jpg', '') || '';
             fetchUrl = getProxyCoverUrl(backgroundName);
-            console.log("Using proxy URL:", fetchUrl);
           }
           
           console.log("Processing image:", img.src, "->", fetchUrl);
@@ -441,19 +547,37 @@ function ResultPage({ response }: { response: Response }) {
 
 function LoginForm({
   onLogin,
+  onQuickLogin,
 }: {
-  onLogin?: (email: string, password: string) => void;
+  onLogin?: (email: string, password: string, remember: boolean) => void;
+  onQuickLogin?: (record: QueryRecord) => void;
 }) {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const savedAccount = getSavedAccount();
+  const [email, setEmail] = useState<string>(savedAccount?.email || "");
+  const [password, setPassword] = useState<string>(savedAccount?.password || "");
+  const [remember, setRemember] = useState<boolean>(!!savedAccount);
+  const [records, setRecords] = useState<QueryRecord[]>(getQueryRecords());
 
   const handleSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (onLogin) onLogin(email, password);
+    if (onLogin) onLogin(email, password, remember);
+  };
+
+  const handleDeleteRecord = (userCode: string, ev: React.MouseEvent) => {
+    ev.stopPropagation();
+    deleteQueryRecord(userCode);
+    setRecords(getQueryRecords());
+  };
+
+  const handleClearAccount = () => {
+    clearSavedAccount();
+    setEmail("");
+    setPassword("");
+    setRemember(false);
   };
 
   return (
-    <>
+    <div className="login-container">
       <form className="login-form card" onSubmit={handleSubmit} method="post">
         <div>
           <label htmlFor="email">用户名、电子邮箱或用户ID</label>
@@ -477,11 +601,57 @@ function LoginForm({
           />
         </div>
 
+        <div className="remember-row">
+          <label className="remember-label">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(ev) => setRemember(ev.target.checked)}
+            />
+            <span>记住我</span>
+          </label>
+          {savedAccount && (
+            <button type="button" className="clear-account-btn" onClick={handleClearAccount}>
+              删除保存的账号
+            </button>
+          )}
+        </div>
+
         <button type="submit">
           登录并查询
         </button>
       </form>
-    </>
+
+      {records.length > 0 && (
+        <div className="query-history card">
+          <h3>最近查询</h3>
+          <div className="history-list">
+            {records.map((record) => (
+              <div
+                key={record.userCode}
+                className="history-item"
+                onClick={() => onQuickLogin?.(record)}
+              >
+                <div className="history-info">
+                  <span className="history-name">{record.name}</span>
+                  <span className="history-code">ID: {record.userCode}</span>
+                  <span className="history-potential">{record.potential.toFixed(2)}</span>
+                </div>
+                <div className="history-meta">
+                  <span className="history-time">{formatRecordTime(record.timestamp)}</span>
+                  <button
+                    className="delete-record-btn"
+                    onClick={(ev) => handleDeleteRecord(record.userCode, ev)}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
